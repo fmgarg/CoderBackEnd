@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "name": "entregas",
+  "version": "1.0.0",
+  "main": "Desafio1.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fmgarg/CoderBackEnd.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fmgarg/CoderBackEnd/issues"
+  },
+  "homepage": "https://github.com/fmgarg/CoderBackEnd#readme",
+  "description": ""
+}
