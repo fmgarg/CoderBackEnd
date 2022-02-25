@@ -8,8 +8,8 @@ let productosParse = JSON.parse(productos)
 //console.log(JSON.stringify(datosParse, null, 2))
 fs.writeFileSync('./productos.txt', JSON.stringify(productosParse, null, 2))
 
-//string console.log(producto)
-// objet console.log(productoParse)
+//string console.log(productos)
+// objet console.log(productosParse)
 
 const newObjeto = {
     "title":"Globo Terráqueo",                                                                                                                          
@@ -41,8 +41,13 @@ class Contenedor {
     async save(producto) {
         try {
             producto ["id"] = productosParse.length + 1
-            productosParse.push (producto)
-            console.log(producto)
+            //console.log(productosParse)
+            productosParse.push(producto)
+            let productosString = JSON.stringify(this.listaProductos, null, 2);
+
+           // fs.writeFile('./productos.txt', JSON.stringify(productosString, null, 4))
+            
+            return (producto.id)
        
         }
         catch (err) {
@@ -57,4 +62,4 @@ const items = new Contenedor ('productos.json');
 //console.log(items.getAll())
 
 
-items.save(newObjeto)
+console.log(items.save(newObjeto))
