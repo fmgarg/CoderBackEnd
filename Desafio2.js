@@ -1,78 +1,60 @@
-const fs = require ("fs")
+const fs = require('fs');
 
-//escribiendo el archivo.txt
+const nombreArchivo = 'productos.json'
 
+let productos = fs.readFileSync('./productos.json', 'utf-8')
+let productosParse = JSON.parse(productos)
 
-//leyendo los datos
-let datos = fs.readFile('./productos.json', (error, datos)=>{
-    if(error) {
-        console.log (error)
-    } else {
-        let datosParse = JSON.parse(datos)
-        console.log(JSON.stringify(datosParse, null, 2))
-        fs.writeFile('./productos.txt', JSON.stringify(datosParse, null, 2), (error, datos)=>{
-            if (error){
-                console.log(error)
-            } else {
-                console.log('archivo creado')
-            }
-        })
-    }
-})
+//console.log(JSON.stringify(datosParse, null, 2))
+fs.writeFileSync('./productos.txt', JSON.stringify(productosParse, null, 2))
 
-//lista de productos
-const productos = [];
+//string console.log(producto)
+// objet console.log(productoParse)
 
-class Producto {
-    constructor (title, price, thumbnail){
-    this.title = title.toLowerCase (),
-    this.price = price,
-    this.thumbnail = thumbnail
-    };
-
-    save (objet){
-
-    };
+const newObjeto = {
+    "title":"Globo Terráqueo",                                                                                                                          
+    "price": 345.67,                                                                                                                                     
+    "thumbnail":"https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png"                                   
 }
 
-//creando productos
+class Contenedor {
+       
+    constructor (nombreArchivo, productosParse, newObjeto){
+        this.archivo = nombreArchivo,
+        this.listaProductos = productosParse
+        this.objeto = newObjeto
+        };
+
+    async getAll() {
+        try {
+            const contenido = fs.readFileSync(this.archivo, "utf8");
+            //console.log(contenido)
+            const contenidoParse = JSON.parse(contenido);
+            //console.log(contenidoParse)
+            return contenidoParse;
+            }
+        catch (err) {
+            console.log('no se encuentra el archivo');
+        }
+        }
+
+    async save(producto) {
+        try {
+            producto ["id"] = productosParse.length + 1
+            productosParse.push (producto)
+            console.log(producto)
+       
+        }
+        catch (err) {
+            console.log('no se pudo agregar');
+        }
+    }
+
+}
+
+const items = new Contenedor ('productos.json');
+
+//console.log(items.getAll())
 
 
-const producto1 = new Producto (
-    'Globo Terráqueo',                                                                                                                          
-    345.67,                                                                                                                                     
-    'https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png',                                   
-);
-const producto2 = new Producto (
-    'Escuadra',                                                                                                                                 
-    123.45,                                                                                                                                     
-    'https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png',                                     
-);
-const producto3 = new Producto (
-    'Calculadora',                                                                                                                              
-    234.56,                                                                                                                                     
-    'https://cdn3.iconfinder.com/data/icons/education-209/64/calculator-math-tool-school-256.png',                                          
-)
-
-//metodo para agregar los productos a la lista
-const create = (Producto) => {
-    productos.push (Producto)
-
-  }
-
-create(producto1)
-create(producto2)
-create(producto3)
-
-//agregando id a los productos de la lista
-productos.forEach((item, index)=>{
-    item.id = index+1;
-   });
-  // console.log(productos);
-
-//metodo que retorna la lista de productos
-const getAll = () =>{
-    return productos;
-  };
-
-console.log(productos)
+items.save(newObjeto)
