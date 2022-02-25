@@ -1,5 +1,25 @@
 const fs = require ("fs")
 
+//escribiendo el archivo.txt
+
+
+//leyendo los datos
+let datos = fs.readFile('./productos.json', (error, datos)=>{
+    if(error) {
+        console.log (error)
+    } else {
+        let datosParse = JSON.parse(datos)
+        console.log(JSON.stringify(datosParse, null, 2))
+        fs.writeFile('./productos.txt', JSON.stringify(datosParse, null, 2), (error, datos)=>{
+            if (error){
+                console.log(error)
+            } else {
+                console.log('archivo creado')
+            }
+        })
+    }
+})
+
 //lista de productos
 const productos = [];
 
@@ -8,11 +28,15 @@ class Producto {
     this.title = title.toLowerCase (),
     this.price = price,
     this.thumbnail = thumbnail
-    }
+    };
+
+    save (objet){
+
+    };
 }
 
 //creando productos
-let id = productos.length +1
+
 
 const producto1 = new Producto (
     'Globo Terráqueo',                                                                                                                          
@@ -33,6 +57,7 @@ const producto3 = new Producto (
 //metodo para agregar los productos a la lista
 const create = (Producto) => {
     productos.push (Producto)
+
   }
 
 create(producto1)
@@ -50,23 +75,4 @@ const getAll = () =>{
     return productos;
   };
 
-//console.log(productos)
-
-class Contenedor {
-    constructor (nombreArchivo) {
-        this.nombreArchivo = nombreArchivo
-    }
-
-    async save (producto){
-        try {
-            obj = producto;
-            obj.id = productos.length + 1;
-            productos.push (obj);
-            await fs.promises.writeFile (
-                `./${this.nombreArchivo}`,
-            )
-        }
-    }
-
-}
-  
+console.log(productos)
