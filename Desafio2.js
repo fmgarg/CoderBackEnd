@@ -1,8 +1,8 @@
 const fs = require('fs');
 
-const nombreArchivo = 'productos.json'
+const nombreArchivo = 'productos.txt'
 
-let productos = fs.readFileSync('./productos.json', 'utf-8')
+let productos = fs.readFileSync('./productos.txt', 'utf-8')
 let productosParse = JSON.parse(productos)
 
 //console.log(JSON.stringify(datosParse, null, 2))
@@ -26,16 +26,17 @@ class Contenedor {
         };
 
     async getAll() {
-        try {
-            const contenido = fs.readFileSync(this.archivo, "utf8");
-            //console.log(contenido)
-            const contenidoParse = JSON.parse(contenido);
-            //console.log(contenidoParse)
-            return contenidoParse;
+            try {
+
+                if (this.listaProductos !== []) {
+                    console.log(productosParse);
+                } else {
+                    throw 'no hay productos para mostrar'
+                }
+
+            } catch (error) {
+                console.log(`Error: ${error}`);
             }
-        catch (err) {
-            console.log('no se encuentra el archivo');
-        }
         }
 
     async save(producto) {
@@ -49,18 +50,30 @@ class Contenedor {
             
             await fs.writeFile('./productos.txt', JSON.stringify(productosParse, null, 4), error =>{
                 if(error){
-
                 } else {
-                    console.log('guardado')
+                    console.log(`el nuevo objeto fue guardado con el id ${producto.id}`)
                 }
             })
-            
-            console.log (producto.id)
-            
-       
+            //console.log (producto.id)
         }
         catch (err) {
             console.log('no se pudo agregar');
+        }
+    }
+
+    async getByID(ID) {
+        try {
+            let buscarProductoXId = productosParse.find(elem => elem.id == ID);
+            //console.log(buscarProductoXId)
+            
+            if (buscarProductoXId == null){                
+                console.log('no se ubica el producto');
+            }else{
+                console.log(buscarProductoXId);
+            }
+            
+        } catch (error) {
+            console.error(`Error: ${error}`);
         }
     }
 
@@ -68,7 +81,11 @@ class Contenedor {
 
 const items = new Contenedor ('productos.json');
 
-//console.log(items.getAll())
 
 
-items.save(newObjeto)
+
+//items.save(newObjeto)
+
+//items.getAll()
+
+items.getByID(2)
