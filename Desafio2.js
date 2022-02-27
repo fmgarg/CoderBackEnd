@@ -12,7 +12,7 @@ fs.writeFileSync('./productos.txt', JSON.stringify(productosParse, null, 2))
 // objet console.log(productosParse)
 
 const newObjeto = {
-    "title":"Globo Terráqueo",                                                                                                                          
+    "title":"Pez Globo",                                                                                                                          
     "price": 345.67,                                                                                                                                     
     "thumbnail":"https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png"                                   
 }
@@ -41,13 +41,22 @@ class Contenedor {
     async save(producto) {
         try {
             producto ["id"] = productosParse.length + 1
-            //console.log(productosParse)
+            //console.log(producto)
             productosParse.push(producto)
-            let productosString = JSON.stringify(this.listaProductos, null, 2);
-
-           // fs.writeFile('./productos.txt', JSON.stringify(productosString, null, 4))
+            //console.log(productosParse)
+            //let productosString = JSON.stringify(productosParse, null, 2);
+            //console.log(productosString)
             
-            return (producto.id)
+            await fs.writeFile('./productos.txt', JSON.stringify(productosParse, null, 4), error =>{
+                if(error){
+
+                } else {
+                    console.log('guardado')
+                }
+            })
+            
+            console.log (producto.id)
+            
        
         }
         catch (err) {
@@ -62,4 +71,4 @@ const items = new Contenedor ('productos.json');
 //console.log(items.getAll())
 
 
-console.log(items.save(newObjeto))
+items.save(newObjeto)
