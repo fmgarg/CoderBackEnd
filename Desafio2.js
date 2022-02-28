@@ -5,11 +5,7 @@ const nombreArchivo = 'productos.txt'
 let productos = fs.readFileSync('./productos.txt', 'utf-8')
 let productosParse = JSON.parse(productos)
 
-//console.log(JSON.stringify(datosParse, null, 2))
 fs.writeFileSync('./productos.txt', JSON.stringify(productosParse, null, 2))
-
-//string console.log(productos)
-// objet console.log(productosParse)
 
 const newObjeto = {
     "title":"Pez Globo",                                                                                                                          
@@ -44,10 +40,7 @@ class Contenedor {
             producto ["id"] = productosParse.length + 1
             //console.log(producto)
             productosParse.push(producto)
-            //console.log(productosParse)
-            //let productosString = JSON.stringify(productosParse, null, 2);
-            //console.log(productosString)
-            
+            //console.log(productosParse)            
             await fs.writeFile('./productos.txt', JSON.stringify(productosParse, null, 4), error =>{
                 if(error){
                 } else {
@@ -65,13 +58,11 @@ class Contenedor {
         try {
             let buscarProductoXId = productosParse.find(elem => elem.id == ID);
             //console.log(buscarProductoXId)
-            
             if (buscarProductoXId == null){                
                 console.log('no se ubica el producto');
             }else{
                 console.log(buscarProductoXId);
             }
-            
         } catch (error) {
             console.error(`Error: ${error}`);
         }
@@ -92,40 +83,27 @@ class Contenedor {
                     }
                 })
                 //console.log (resultado)
-
-
             }
         } catch (error) {
             console.error(`Error: ${error}`);
         }
     }
 
-   /* async deleteById(ID) {
-        try {
-          const items = productosParse;
-          if (!items) console.log("No existen datos en el archivo");
-          else {
-            const resultado = productosParse.filter(item => item.id !== ID);
-            //await fs.promises.writeFile(this.fileName,JSON.stringify(result, null, 2));
-            console.log("resultado");
-          }
-        } catch (err) {
-          if (err) {
-            console.log("El archivo no existe");
-          } else {
-            console.log(err);
-          }
-        }
-      }
-    */
-
+    async deleteAll() { 
+        this.listaProductos = [];
+        await fs.writeFile('./productos.txt', JSON.stringify(this.listaProductos, null, 4), error =>{
+            if(error){
+            } else {
+            console.log("Se eliminaron todos los productos del contenedor.")
+            }
+        });
+    }
 
 }
 
 const items = new Contenedor ('productos.json');
 
-
-
+//LLAMADOS DE PRUEBA A CADA METODO
 
 //items.save(newObjeto)
 
@@ -133,4 +111,6 @@ const items = new Contenedor ('productos.json');
 
 //items.getByID(1)
 
-items.deleteByID(4)
+//items.deleteByID(4)
+
+//items.deleteAll()
