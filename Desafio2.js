@@ -77,6 +77,49 @@ class Contenedor {
         }
     }
 
+    async deleteByID(ID) {
+        try {
+            const eliminado = productosParse.filter ((item) => item.id == ID);
+            //console.log(eliminado)
+            if (eliminado.length === 0) { 
+                console.log('el producto no existe')
+            }else{
+                const resultado = productosParse.filter ((item) => item.id !== ID)
+                await fs.writeFile('./productos.txt', JSON.stringify(resultado, null, 4), error =>{
+                    if(error){
+                    } else {
+                    //  console.log(`esta es su lista de productos actualizada ${resultado}`)
+                    }
+                })
+                //console.log (resultado)
+
+
+            }
+        } catch (error) {
+            console.error(`Error: ${error}`);
+        }
+    }
+
+   /* async deleteById(ID) {
+        try {
+          const items = productosParse;
+          if (!items) console.log("No existen datos en el archivo");
+          else {
+            const resultado = productosParse.filter(item => item.id !== ID);
+            //await fs.promises.writeFile(this.fileName,JSON.stringify(result, null, 2));
+            console.log("resultado");
+          }
+        } catch (err) {
+          if (err) {
+            console.log("El archivo no existe");
+          } else {
+            console.log(err);
+          }
+        }
+      }
+    */
+
+
 }
 
 const items = new Contenedor ('productos.json');
@@ -88,4 +131,6 @@ const items = new Contenedor ('productos.json');
 
 //items.getAll()
 
-items.getByID(2)
+//items.getByID(1)
+
+items.deleteByID(4)
