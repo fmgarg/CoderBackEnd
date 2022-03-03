@@ -79,7 +79,7 @@ class Contenedor {
                 await fs.writeFile('./productos.txt', JSON.stringify(resultado, null, 4), error =>{
                     if(error){
                     } else {
-                    //  console.log(`esta es su lista de productos actualizada ${resultado}`)
+                        console.log('producto eliminado')
                     }
                 })
                 //console.log (resultado)
@@ -111,6 +111,6 @@ const items = new Contenedor ('productos.json');
 
 //items.getByID(1)
 
-//items.deleteByID(4)
+//items.deleteByID(6)
 
 //items.deleteAll()
