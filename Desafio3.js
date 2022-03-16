@@ -125,8 +125,8 @@ const items = new Contenedor ('productos.json');
 const express = require("express");
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+//app.use(express.json());
+//app.use(express.urlencoded({ extended: true }));
 
 const PORT = 8080
 let contador = 0
@@ -147,6 +147,8 @@ app.get("/visitas", (req, res) => {
   )
 })
 
+//https://admitted-guiltless-stygimoloch.glitch.me/productos
+
 app.get("/productos", async (req, res) => {
 
     let products  = await items.getAll()
@@ -156,11 +158,13 @@ app.get("/productos", async (req, res) => {
 
 })
 
+//https://admitted-guiltless-stygimoloch.glitch.me/productoRandom
+
 app.get("/productoRandom", async (req, res) => {
 
   let products  = await items.getAll()
   let randomId=(min,max)=>{
-    return Math.random()*(max-min)+min;
+      return Math.random()*(max-min)+min;
   }
   let maxLength= products.length+1;
   let idRandom=parseInt(randomId(1,maxLength));
