@@ -1,1 +1,0 @@
-mongodb+srv://ex888gof:<password>@cluster0.mnmsh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
