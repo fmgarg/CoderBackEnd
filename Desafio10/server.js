@@ -175,10 +175,10 @@ app.post('/login'
                   req.session.admin = true
                   const userLogin = {user:{}}
                   userLogin['user']= user
-                  console.log(userLogin)
+                  //console.log(userLogin)
                   userAdmin.push(userLogin)
-                  console.log(userAdmin)
-                  console.log(req.session)
+                  //console.log(userAdmin)
+                  //console.log(req.session)
                   res.redirect('/home',)
                 }
 )
@@ -201,8 +201,10 @@ app.get('/logout', (req, res) => {
   //console.log('aca se destruye la sesion')
   //console.log(req.session)
   req.session.destroy((err) => {
-    if (!err) res.send('Logout ok!')
-    else res.send({ status: 'logout Error', error: err })
+    if (!err) {
+    res.redirect('logout.html')
+    //res.send('Logout ok!')
+    }else{ res.send({ status: 'logout Error', error: err })}
   })
 })
 
