@@ -7,12 +7,17 @@ const app = express()
 const httpServer = new HttpServer(app)
 const io = new IOServer(httpServer)
 
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
+const connectMongo = require ('connect-mongo')
+const advanceOptions = {useNewUrlParser: true, useUnifiedTopology: true}
+
 app.use(express.static('./public'))
 
 httpServer.listen(8080, () =>{ getAll(); console.log('servidor levantado puerto: 8080')})
 
 //metodo para enviar y recibir peticiones json
-//app.use(express.Router())
+const router = express.Router()
 
 //usar app delante de use hace que sea general y que toda la app pueda procesar JSON y siempre debe ir antes del router con la peticion**
 app.use(express.urlencoded({ extended: true}))
@@ -97,6 +102,7 @@ io.on('connection', (socket) => {
 
 //-------------SQLite3--------------
 const {optionsMSG} = require ('./optionsMSG/sqLite3') 
+const { MemoryStore } = require('express-session')
 const knexMSG = require ('knex') (optionsMSG);
 
 //----------------esta funcion crea la tabla de mensajes sqLite3------------------
@@ -130,15 +136,10 @@ async function getAll (){
 
 //--------------------------LOGIN--CON---SESSION ---------------------------//
 
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
 
-const connectMongo = require ('connect-mongo')
-
-const advanceOptions = {useNewUrlParser: true, useUnifiedTopology: true}
 
 //----METODO DE SAVE SESSION CON RUTA(path) y TIEMPO (ttl)
-app.use('/login',
+app.use(
   session({
     store: connectMongo.create ({
           mongoUrl: 'mongodb+srv://ex888gof:2013facu@cluster0.mnmsh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
@@ -147,46 +148,72 @@ app.use('/login',
     secret: 'secreto',
     resave: true,
     saveUninitialized: true,
+    cookie: { maxAge: 60000 }
   })
 )
 
 //----METODO DE LOGIN con PASSWORD----------------
+//const sessionId = {_id:{}}
+
+app.post('/login'
+                ,async (req, res, next) =>{
+                  req.session.save(function(err) {
+                    // session saved
+                  })
+                  next()
+                }
+                ,async (req, res) => {
+                  const {user, password} = req.body
+                  //console.log(user,password)
+                  //res.send('este es el post')
+                  
+                  if (user !== 'pepe' || password !== 'pepepass') {
+                    return res.redirect('/')
+                  }
+                  req.session.user = user
+                  req.session.admin = true
+                  const userLogin = {user:{}}
+                  userLogin['user']= user
+                  console.log(userLogin)
+                  userAdmin.push(userLogin)
+                  console.log(userAdmin)
+                  console.log(req.session)
+                  res.redirect('/home',)
+                }
+)
+
+app.use('/home'
+              ,function (req, res, next) {
+                if (userAdmin.length !== 0){
+                    //console.log(userAdmin)
+                    next ()
+                } else {
+                    //res.send ({ error: 'acceso no autorizado'})
+                    res.redirect('/')
+                }
+              }
+              ,productosRouter
+)
 
 
-app.post('/login', async (req, res) => {
-  const {user, password} = req.body
-  //console.log(user,password)
-  //res.send('este es el post')
-  
-  if (user !== 'pepe' || password !== 'pepepass') {
-    return res.send('login failed')
-  }
-  req.session.user = user
-  req.session.admin = true
-  const userLogin = {user:{}}
-  userLogin['user']= user
-  console.log(userLogin)
-  userAdmin.push(userLogin)
-  console.log(userAdmin)
-  res.redirect('/home',)
-  
-})
-
-
+/*
 //-----METODO DE ACCESO A RUTA PRIVADO CON FUNCION---
 function auth(req, res, next) {
-  if (req.session?.user === 'pepe' && req.session?.admin) {
-    return next()
-  }
-  return res.status(401).send('error de autorización!')
+                                if (req.session?.user === 'pepe' && req.session?.admin) {
+                                  return next()
+                                }
+                                return res.status(401).send('error de autorización!')
 }
 
 app.get('/privado', auth, (req, res) => {
-  res.send('si estas viendo esto es porque ya te logueaste!')
+                               res.send('si estas viendo esto es porque ya te logueaste!')
 })
+*/
 
 //----METODO LOGOUT que destruye la sesion--------
-app.get('/reiniciar', (req, res) => {
+app.get('/logout', (req, res) => {
+  //console.log('aca se destruye la sesion')
+  //console.log(req.session)
   req.session.destroy((err) => {
     if (!err) res.send('Logout ok!')
     else res.send({ status: 'logout Error', error: err })
@@ -194,18 +221,3 @@ app.get('/reiniciar', (req, res) => {
 })
 
 //----------------FIN SESSION---------------------------------------------
-
-//exponer las rutas a una app. router con la peticion**
-app.use('/home'
-
-,function (req, res, next) {
-  if (userAdmin.length !== 0){
-
-      //console.log(userAdmin)
-      next ()
-  } else {
-      res.send ({ error: 'acceso no autorizado'})
-  }
-
-}
-,productosRouter)

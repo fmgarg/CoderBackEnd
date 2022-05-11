@@ -90,10 +90,7 @@ function renderUser(data) {
   const html = data
     .map((elem, index) => {
       return `
-              <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                  <p class="lead fw-normal mb-2">${elem.user}</p>    
-                  <a href="#!" class="text-danger"><i class="fas fa-trash fa-lg"></i></a>
-              </div>
+            <h1 class="heading">${elem.user}</h1>
             `
     })
     .join(' ')
