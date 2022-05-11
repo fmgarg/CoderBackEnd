@@ -16,8 +16,10 @@ app.use(express.static('./public'))
 
 httpServer.listen(8080, () =>{ getAll(); console.log('servidor levantado puerto: 8080')})
 
+/*
 //metodo para enviar y recibir peticiones json
 const router = express.Router()
+*/
 
 //usar app delante de use hace que sea general y que toda la app pueda procesar JSON y siempre debe ir antes del router con la peticion**
 app.use(express.urlencoded({ extended: true}))
@@ -31,7 +33,7 @@ const productos = require ('./routes/productosRouter') ['productos']
 //console.log(eventos)
 
 
-//---------handlebars---------------
+//------------------------------HANDLEBARS-----------------------//
 const handlebars = require('express-handlebars')
 const { INSPECT_MAX_BYTES } = require('buffer')
 const { timeStamp } = require('console')
@@ -47,7 +49,7 @@ app.engine(
 app.set('view engine', 'hbs')
 app.set('views', './views')
 
-//--------------sockets-------------
+//---------------------------------SOCKETS-----------------------//
 const fs = require('fs');
 const { response } = require('express')
 
@@ -100,7 +102,8 @@ io.on('connection', (socket) => {
 
 })
 
-//-------------SQLite3--------------
+//---------------------------------SQLite3----------------------------------------//
+
 const {optionsMSG} = require ('./optionsMSG/sqLite3') 
 const { MemoryStore } = require('express-session')
 const knexMSG = require ('knex') (optionsMSG);
@@ -136,9 +139,7 @@ async function getAll (){
 
 //--------------------------LOGIN--CON---SESSION ---------------------------//
 
-
-
-//----METODO DE SAVE SESSION CON RUTA(path) y TIEMPO (ttl)
+//----METODO DE SAVE SESSION CON RUTA(path) y TIEMPO (ttl)/ cookie maxAge
 app.use(
   session({
     store: connectMongo.create ({
@@ -195,6 +196,15 @@ app.use('/home'
               ,productosRouter
 )
 
+//----METODO LOGOUT que destruye la sesion--------
+app.get('/logout', (req, res) => {
+  //console.log('aca se destruye la sesion')
+  //console.log(req.session)
+  req.session.destroy((err) => {
+    if (!err) res.send('Logout ok!')
+    else res.send({ status: 'logout Error', error: err })
+  })
+})
 
 /*
 //-----METODO DE ACCESO A RUTA PRIVADO CON FUNCION---
@@ -209,15 +219,5 @@ app.get('/privado', auth, (req, res) => {
                                res.send('si estas viendo esto es porque ya te logueaste!')
 })
 */
-
-//----METODO LOGOUT que destruye la sesion--------
-app.get('/logout', (req, res) => {
-  //console.log('aca se destruye la sesion')
-  //console.log(req.session)
-  req.session.destroy((err) => {
-    if (!err) res.send('Logout ok!')
-    else res.send({ status: 'logout Error', error: err })
-  })
-})
 
 //----------------FIN SESSION---------------------------------------------
