@@ -1,6 +1,7 @@
 const express = require ('express')
 
 const req = require('express/lib/request')
+const { redirect } = require('express/lib/response')
 
 const productosRouter = express.Router ()
 
@@ -154,15 +155,21 @@ const items = new Contenedor ('productos.json');
 
 //---------------------------------------------------------creacion de las rutas--------------------------------------------------------------------------
 
-productosRouter.get ('/', async (req, res)=>{
-    let products = await items.getAll()
 
-    fakeApi = ()=> products
+productosRouter.get ('/'
+    , async (req, res)=>{
+            let products = await items.getAll()
 
-    res.render('datos', {suggestedChamps: fakeApi(), listExists: true})
-    //return fakeApi()
-    //console.log(fakeApi())
-})
+            fakeApi = ()=> products
+
+            //console.log(req.session.cookie.expires)
+
+            res.render('datos', {suggestedChamps: fakeApi(), listExists: true})
+            //return fakeApi()
+            //console.log(fakeApi())
+            //next()
+    }
+)
 
 /*productosRouter.get ('/:ID', async (req, res)=>{
     number = JSON.parse(req.params.ID)

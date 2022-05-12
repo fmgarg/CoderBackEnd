@@ -144,12 +144,14 @@ app.use(
   session({
     store: connectMongo.create ({
           mongoUrl: 'mongodb+srv://ex888gof:2013facu@cluster0.mnmsh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+          //ttl: 10,
+          autoRemove: 'disabled',
           mongoOptions: advanceOptions
     }),
     secret: 'secreto',
-    resave: true,
-    saveUninitialized: true,
-    cookie: { maxAge: 60000 }
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 10000 }
   })
 )
 
@@ -157,13 +159,7 @@ app.use(
 //const sessionId = {_id:{}}
 
 app.post('/login'
-                ,async (req, res, next) =>{
-                  req.session.save(function(err) {
-                    // session saved
-                  })
-                  next()
-                }
-                ,async (req, res) => {
+                ,async (req, res, next) => {
                   const {user, password} = req.body
                   //console.log(user,password)
                   //res.send('este es el post')
@@ -175,18 +171,40 @@ app.post('/login'
                   req.session.admin = true
                   const userLogin = {user:{}}
                   userLogin['user']= user
-                  //console.log(userLogin)
                   userAdmin.push(userLogin)
-                  //console.log(userAdmin)
-                  //console.log(req.session)
-                  res.redirect('/home',)
+                  console.log(req.session.cookie.maxAge)
+
+                  res.redirect('/home')
+                  next()
                 }
+                ,async (req, res, next) => {
+                  await setTimeout(function () {
+                      if(req.session.cookie.maxAge<=1){
+                          //aca la cookie expiro
+                          console.log('este es el time control 1')
+                          console.log(req.session.cookie.maxAge)
+                          next();
+                  
+                      }else{
+                          //aca la cookie esta vigente
+                          console.log('este es el time control 2')
+                          console.log(req.session.cookie.maxAge)
+                      }
+                      
+                  }, 11000);
+                }
+                ,(req, res) => {
+                  console.log('aca deberia redirigir o recargar')
+                  //res.redirect('/')
+                }
+
 )
 
 app.use('/home'
               ,function (req, res, next) {
                 if (userAdmin.length !== 0){
                     //console.log(userAdmin)
+                    console.log(req.session.cookie.expires)
                     next ()
                 } else {
                     //res.send ({ error: 'acceso no autorizado'})
